@@ -1,2 +1,2 @@
-# mk476-project
+# hotel-cancellations-predictor
 Predicting hotel cancellations
