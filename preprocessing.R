@@ -8,11 +8,14 @@ library(ggcorrplot)
 
 
 df <- fread('hotel_bookings.csv')
-df
+View(df[64427])
+unique(df$country)
+colnames(df)[14] <- 'country_code'
+colnames(df)
 
-# add a column for arrival_date for time serious analysis
+
+# add a column for arrival_date for time series analysis
 df[, arrival_date_month := match(arrival_date_month,month.name)]
-
 df[, arrival_date := with(df, ymd(sprintf('%04d%02d%02d', arrival_date_year, arrival_date_month, arrival_date_day_of_month)))]
 df[, reservation_status_date := as.Date(reservation_status_date)]
 df[, arrival_date_month:= month.name[arrival_date_month]]
@@ -57,28 +60,40 @@ df$customer_transient_party <- sapply(df$customer_type, function(x) if(x == 'Tra
 df$customer_contract <- sapply(df$customer_type, function(x) if(x == 'Contract') {1} else {0})
 df$customer_group <- sapply(df$customer_type, function(x) if(x == 'Group') {1} else {0})
 
-canceled_row <- nrow(df[is_canceled == 1])
-not_canceled <- df[is_canceled == 0]
-canceled <- df[is_canceled == 1]
-set.seed(5)
-cleared_not_canceled <- not_canceled[sample(nrow(not_canceled), canceled_row)]
-df <- rbind(cleared_not_canceled , canceled)
-
-df_time <- df[,100*(sum(is_canceled)/.N), by= .(arrival_date_month, hotel)]
-df_time
-
-ggplot(df_time, aes(x = factor(arrival_date_month, levels= c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",  "December")), y = V1, fill= hotel)) + geom_histogram(stat = 'identity', position = 'dodge') + labs(title = "Cancellations per Month", y = "Cancellation %" , x = 'Month') + scale_fill_discrete(name="Hotel") + theme(plot.title = element_text(hjust = 0.5)) + scale_fill_manual("Hotel", values = c("City Hotel" = "deepskyblue", "Resort Hotel" = "orange"))
+#canceled_row <- nrow(df[is_canceled == 1])
+#not_canceled <- df[is_canceled == 0]
+#canceled <- df[is_canceled == 1]
+#set.seed(5)
+#cleared_not_canceled <- not_canceled[sample(nrow(not_canceled), canceled_row)]
+#df <- rbind(cleared_not_canceled , canceled)
 
 
-rmcols <- rev(seq(1,ncol(df))[!as.logical(sapply(df, is.numeric))])
-for (i in rmcols) df[[i]] <- NULL
+#plots
+#df_time <- df[,100*(sum(is_canceled)/.N), by= .(arrival_date_month, hotel)]
+#ggplot(df_time, aes(x = factor(arrival_date_month, levels= c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",  "December")), y = V1, fill= hotel)) + geom_histogram(stat = 'identity', position = 'dodge') + labs(title = "Cancellations per Month", y = "Cancellation %" , x = 'Month') + scale_fill_discrete(name="Hotel") + theme(plot.title = element_text(hjust = 0.5)) + scale_fill_manual("Hotel", values = c("City Hotel" = "deepskyblue", "Resort Hotel" = "orange"))
 
-data2 <- copy(df)
+#df2 <- copy(df)
+#rmcols <- rev(seq(1,ncol(df2))[!as.logical(sapply(df2, is.numeric))])
+#for (i in rmcols) df2[[i]] <- NULL
+#corr <- round(cor(data2), 1)
+#ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
+
+#join weather and country data
+country <- fread('country.csv')
+colnames(country) <- c('country_code', 'country_name', 'distance', 'eu')
+weather <- fread('weather.csv')
+weather$date <- as.Date(weather$date, '%m/%d/%y')
+# resort hotel is argrave, city hotel is lisbon
+merge(x = df, y = weather, by.x = c('arrival_date', 'city'), by.y = c('date', 'city'), all.x = TRUE)
+merge(x = df, y = country, by=c('country_code'), all.x= TRUE) 
 
 
-corr <- round(cor(data2), 1)
-ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
 
+
+
+which(is.na(newdf$country_name))
+
+View(newdf[64427])
 
 
 
