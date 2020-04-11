@@ -7,8 +7,8 @@ library(wesanderson)
 library(ggcorrplot)
 
 
-df <- fread('hotel_bookings.csv')
-View(df[64427])
+df <- fread('hotel_data.csv')
+View(df)
 unique(df$country)
 colnames(df)[14] <- 'country_code'
 colnames(df)
@@ -78,17 +78,20 @@ for (i in rmcols) df2[[i]] <- NULL
 corr <- round(cor(data2), 1)
 ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
 
-#join weather and country data
-country <- fread('country.csv')
-colnames(country) <- c('country_code', 'country_name', 'distance', 'eu')
+#join weather data
+
 weather <- fread('weather.csv')
+View(weather)
 weather$date <- as.Date(weather$date, '%m/%d/%y')
 # resort hotel is argrave, city hotel is lisbon
 merge(x = df, y = weather, by.x = c('arrival_date', 'city'), by.y = c('date', 'city'), all.x = TRUE)
-merge(x = df, y = country, by=c('country_code'), all.x= TRUE) 
-which(is.na(newdf$country_name))
 
-View(newdf[64427])
+which(is.na(df$temp))
+
+
+View(df)
+
+
 
 
 
