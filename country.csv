@@ -1,0 +1,178 @@
+﻿Code,Country,Km from Portugal,European Union
+ALB,Albania,2406,0
+DZA,Algeria,1558,0
+ASM,American Somoa,16698,0
+AND,Andorra,888,0
+AGO,Angola,6241,0
+AIA,Anguila,5738,0
+ATA,Antartica,14835,0
+ARM,Armenia,4485,0
+ABW,Aruba,6710,0
+AUS,Australia,16151,0
+AUT,Austria,2038,1
+AZE,Azerbaijan,4688,0
+BHS,Bahamas,6542,0
+BHR,Bahrain,5594,0
+BGD,Bangladesh,9052,0
+BRB,Barbados,5787,0
+BLR,Belarus,3143,0
+BEL,Belgium,1584,1
+BEN,Benin,3506,0
+BOL,Bolivia,8440,0
+BIH,Bosnia and Herzegovina,2200,0
+BWA,Botswana,7668,0
+BRA,Brazil,7487,0
+VGB,British Virgin Islands,5859,0
+BGR,Bulgaria,2831,1
+BFA,Burkina Faso,3091,0
+BDI,Burundi,6149,0
+KHM,Cambodia,11026,0
+CMR,Cameroon,4112,0
+CPV,Cape Verde,3088,0
+CYM,Cayman Islands,7227,0
+CAF,Central African Republic,4668,0
+CHL,Chile,10571,0
+CHN,China,9158,0
+CN,Canada?,6918,0
+COL,Colombia,7641,0
+COM,Comoros,7781,0
+CRI,Costa Rica,8081,0
+CIV,Cote d'Ivoire,3553,0
+HRV,Croatia,2021,1
+CUB,Cuba,6789,0
+CYP,Cyprus,3684,1
+CZE,Czech Republic,2190,1
+DNK,Denmark,2280,1
+DJI,Djibouti,3844,0
+DMA,Dominica,5783,0
+DOM,Dominican Republic,6312,0
+TMP,East Timor,14332,0
+ECU,Ecuador,8435,0
+EGY,Egypt,3859,0
+SLV,El Salvador,8246,0
+EST,Estonia,3173,1
+ETH,Ethiopia,5874,0
+FRO,Faeroe Islands,2448,0
+FJI,Fiji,17528,0
+FIN,Finland,3391,1
+FRA,France,1139,1
+ATF,France Southern Territories,12454,0
+PYF,French Polynesia,15571,0
+GAB,Gabon,4906,0
+GEO,Georgia,4283,0
+DEU,Germany,1951,1
+GGY,Geurnsey,1143,0
+GHA,Ghana,3570,0
+GIB,Gibraltar ,442,0
+GRC,Greece,2576,1
+GLP,Guadeloupe,5740,0
+GTM,Guatemala,8226,0
+GNB,Guinea-Bissau,3144,0
+GUY,Guyana,6363,0
+HND,Honduras,7924,0
+HKG,Hong Kong,10904,0
+HUN,Hungary,2389,1
+ISL,Iceland,2927,0
+IND,India,8340,0
+IDN,Indonesia,12768,0
+IRN,Iran,5521,0
+IRQ,Iraq,4637,0
+IRL,Ireland,1558,1
+IMN,Isle of Man,1673,0
+ISR,Israel,3982,0
+ITA,Italy,1771,1
+JAM,Jamacia,6965,0
+JPN,Japan,10934,0
+JEY,Jersey,1193,0
+JOR,Jordan,4124,0
+KAZ,Kazakhstan,5873,0
+KEN,Kenya,6409,0
+KIR,Kirbati,14451,0
+KWT,Kuwait,5153,0
+LAO,Lao ,10272,0
+LVA,Latvia,3066,1
+LBN,Lebanon,3943,0
+LBY,Libya,2771,0
+LIE,Liechtenstein,1673,0
+LTU,Lithuania,2948,1
+LUX,Luxembourg,1617,1
+MAC,Macao,10882,0
+MKD,Macedonia,2533,0
+MDG,Madagascar,8630,0
+MWI,Malawi,7325,0
+MYS,Malaysia,11417,0
+MDV,Maldives,9160,0
+MLI,Mali,2461,0
+MLT,Malta,2020,1
+MRT,Mauritania,2061,0
+MUS,Mauritus,9519,0
+MYT,Mayotte,8010,0
+MEX,Mexico,8718,0
+MCO,Monaco,1386,0
+MNE,Montenegro,2333,0
+MAR,Morocco,852,0
+MOZ,Mozambique,7894,0
+MMR,Myanmar,9617,0
+NAM,Namibia,7469,0
+NPL,Nepal,8239,0
+NLD,Netherlands,1756,1
+NCL,New Caledonia,17876,0
+NZL,New Zeland,19702,0
+NIC,Nicaragua,7993,0
+NGA,Nigeria,3766,0
+NOR,Norway,2613,0
+OMN,Oman,6326,0
+PAK,Pakistan,6930,0
+PLW,Palau,13546,0
+PAN,Panama,7910,0
+PRY,Paraguay,8717,0
+PER,Peru,8730,0
+PHL,Phillipines,12236,0
+POL,Poland,2519,1
+PRT,Portugal,0,1
+PRI,Puerto Rico,6039,0
+QAT,Qatar ,5688,0
+KOR,Republic of Korea,10504,0
+ROU,Romania,2787,1
+RUS,Russia,7311,0
+RWA,Rwanda,6016,0
+SMR,San Marino,1785,0
+STP,Sao Tome and Principe,4614,0
+SAU,Saudi Arabia,5250,0
+SEN,Senegal,2835,0
+SRB,Serbia,2466,0
+SYC,Seychelles,8138,0
+SLE,Sierra Leone,3458,0
+SGP,Singapore,11782,0
+SVK,Slovakia,2440,1
+SVN,Slovenia,2029,1
+ZAF,South Africa,8420,0
+ESP,Spain,402,1
+LKA,Sri Lanka,9367,0
+KNA,St. Kitts and Nevis,5771,0
+LCA,St. Lucia,5855,0
+SDN,Sudan,4781,0
+SUR,Suriname,6211,0
+SWE,Sweden,2964,1
+CHE,Switzerland,1565,0
+SYR,Syria,4171,0
+TWN,Taiwan,11238,0
+TJK,Tajikistan,6613,0
+TZA,Tanzania,6744,0
+THA,Thailand,10461,0
+TGO,Togo,3539,0
+TUN,Tunisia,1695,0
+TUR,Turkey,3710,0
+UGA,Uganda,5888,0
+UKR,Ukraine,3270,0
+GBR,United Kingdom,1812,1
+UMI,United States Minor Outlying Islands,13468,0
+USA,United States of America,7317,0
+URY,Uruguay,9378,0
+UZB,Uzbekistan,5980,0
+VEN,Venezuela,6863,0
+VNM,Vietnam,11163,0
+ZMB,Zambia,6933,0
+ZWE,Zimbabwe,7567,0
+ARG,Argentina,10330,0
+ARE,United Arab Emirates,6031,0

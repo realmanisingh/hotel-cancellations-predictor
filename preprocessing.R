@@ -5,10 +5,41 @@ library(dplyr)
 library(lubridate)
 library(wesanderson)
 library(ggcorrplot)
-
+library(randomForest)
 
 df <- fread('hotel_bookings.csv')
-df
+
+df[, test:=0]
+df[sample(nrow(df), 25000), test:=1] #randomly select 50000 rows for test set
+#split
+df.test <- df[test==1]
+df.train <- df[test==0]
+y.test <- df.test$is_canceled
+
+
+df.train.sample.size <- 20000
+df.train.sample <- df.train[sample(nrow(df.train), df.train.sample.size)]
+y.train.sample <- df.train.sample$is_canceled
+
+
+f1 <- as.formula(is_canceled ~ lead_time + stays_in_weekend_nights + stays_in_week_nights + adults + children + babies + is_repeated_guest + previous_cancellations + booking_changes + adr)
+fit.rndfor <- randomForest( f1,
+                            df.train.sample,
+                            do.trace = 0,
+                            ntree=50,
+                            na.action=na.roughfix,
+                            importance=TRUE)
+
+plot(fit.rndfor)
+
+yhat.rndfor <- predict(fit.rndfor, df.test)
+
+colnames(yhat.rndfor) = NULL
+
+yhat.rndfor2 <- unname(yhat.rndfor)
+yhat.rndfor2 <- as.integer(yhat.rndfor2)
+table(yhat.rndfor2)
+mse_new <- mean((y.test - yhat.rndfor2)^2)
 
 # add a column for arrival_date for time serious analysis
 df[, arrival_date_month := match(arrival_date_month,month.name)]
@@ -78,6 +109,7 @@ data2 <- copy(df)
 
 corr <- round(cor(data2), 1)
 ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
+
 
 
 
