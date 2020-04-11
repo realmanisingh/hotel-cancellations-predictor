@@ -8,10 +8,12 @@ library(ggcorrplot)
 
 
 df <- fread('hotel_data.csv')
-View(df)
 unique(df$country)
-colnames(df)[14] <- 'country_code'
+df <- df[!country == '']
+View(df)
+table(df$country)
 colnames(df)
+View(df)
 
 
 # add a column for arrival_date for time series analysis
@@ -66,16 +68,17 @@ canceled <- df[is_canceled == 1]
 set.seed(5)
 cleared_not_canceled <- not_canceled[sample(nrow(not_canceled), canceled_row)]
 df <- rbind(cleared_not_canceled , canceled)
-
+table(df$is_canceled)
 
 #plots
 df_time <- df[,100*(sum(is_canceled)/.N), by= .(arrival_date_month, hotel)]
 ggplot(df_time, aes(x = factor(arrival_date_month, levels= c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",  "December")), y = V1, fill= hotel)) + geom_histogram(stat = 'identity', position = 'dodge') + labs(title = "Cancellations per Month", y = "Cancellation %" , x = 'Month') + scale_fill_discrete(name="Hotel") + theme(plot.title = element_text(hjust = 0.5)) + scale_fill_manual("Hotel", values = c("City Hotel" = "deepskyblue", "Resort Hotel" = "orange"))
 
-#df2 <- copy(df)
+df2 <- copy(df)
 rmcols <- rev(seq(1,ncol(df2))[!as.logical(sapply(df2, is.numeric))])
 for (i in rmcols) df2[[i]] <- NULL
-corr <- round(cor(data2), 1)
+corr <- round(cor(df2), 1)
+corr
 ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
 
 #join weather data
@@ -85,11 +88,37 @@ View(weather)
 weather$date <- as.Date(weather$date, '%m/%d/%y')
 # resort hotel is argrave, city hotel is lisbon
 merge(x = df, y = weather, by.x = c('arrival_date', 'city'), by.y = c('date', 'city'), all.x = TRUE)
-
-which(is.na(df$temp))
-
-
+View(df[country == ''])
 View(df)
+
+# test & train
+# 85 15
+set.seed(5)
+test.size <- nrow(df) * 0.15
+df[, test:= 0]
+df[sample(nrow(df), test.size), test:= 1]
+
+df.test <- df[test == 1]
+df.train <- df[test == 0]
+
+y.test <- df.test$is_canceled
+y.train <- df.train$is_canceled
+# correlation
+df_time <- df[,100*(sum(is_canceled)/.N), by= .(arrival_date_month, hotel)]
+ggplot(df_time, aes(x = factor(arrival_date_month, levels= c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",  "December")), y = V1, fill= hotel)) + geom_histogram(stat = 'identity', position = 'dodge') + labs(title = "Cancellations per Month", y = "Cancellation %" , x = 'Month') + scale_fill_discrete(name="Hotel") + theme(plot.title = element_text(hjust = 0.5)) + scale_fill_manual("Hotel", values = c("City Hotel" = "deepskyblue", "Resort Hotel" = "orange"))
+
+df2 <- copy(df)
+rmcols <- rev(seq(1,ncol(df2))[!as.logical(sapply(df2, is.numeric))])
+for (i in rmcols) df2[[i]] <- NULL
+corr <- round(cor(df2), 1)
+View(corr)
+ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
+
+# lead time, adults, is_repeated_guest, previous_cancellations, previous_bookings_not_canceled, booking_changes, days_in_waiting_list, required_car_parking_spaces
+# total_of_special_requests, km_from portugal, resort, city, distribute tato, distribute direct, distribute corporate, segment direct, segment corporate, segment group
+# deposit_no deposit, deposit nonrefund, customer transient party
+# correlated variables >= 0.1
+
 
 
 
