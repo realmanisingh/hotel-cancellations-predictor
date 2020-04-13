@@ -135,6 +135,14 @@ f1 <- as.formula(is_canceled ~  lead_time + adults + is_repeated_guest + previou
        + total_of_special_requests + km + resort + city + distribute_TA_TO + distribute_direct + distribute_corporate + segment_direct + segment_corporate + segment_groups 
        + deposit_no_deposit + deposit_non_refund + customer_transient_party)
 
+# Baseline Model 
+baseline_f1 <- as.formula(is_canceled ~  lead_time + adults + is_repeated_guest + previous_cancellations + previous_bookings_not_canceled 
+                          + booking_changes + total_of_special_requests + resort + city + segment_direct 
+                          + segment_corporate + segment_groups)
+baseline_model <- rpart(baseline_f1, df.train, method="class", control = rpart.control(cp = 0.001))
+
+
+
 fit.tree <- rpart(f1, df.train, method="class", control = rpart.control(cp = 0.001))
 
 yhat.tree <- predict(fit.tree, df.train)
