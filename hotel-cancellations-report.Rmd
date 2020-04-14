@@ -1,6 +1,6 @@
 ---
 title: "hotel-cancellations-report"
-author: "Mani Singh"
+author: "Connor O'Shea, James Lee, Kevin Kuo, Mani Singh"
 date: "4/13/2020"
 output: pdf_document
 ---
@@ -11,20 +11,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+#Introduction of the Problem
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+  In 2020, COVID-19 has significantly impacted the day-to-day life of people everywhere. As the majority of the country has been placed in a shelter-in-place-esce way of life, the economic impact of this virus has began to show its true form. Millions of people have been left unemployed, small business have been shut down, and the market has struggled to return back to normalcy. During all this economic downturn, one of the hardest hit industries that have been hit by this is the hotel industry. STR, a hospitality research company, recently reported that about occupancy is down nearly 70% compared to last year. When everything returns to a place of normalcy, every hotel will be looking for ways to save as much profits as possible.
+  The problem that we have attempted to solve this semester focuses on saving hotels money through an attempt at being able to figure out when a consumer is going to cancel a hotel reservation. While hotels receive a cancellation fee from a consumer opting out of a reservation, this is small fee that only represents approximately 1%  of total operating costs for a single year, meaning that high cancellations lead to inability for a company to function. As there has been a rise in the use of Online Travel Agencies (also known as OTAs), there has also been a rise of cancellations as the expereince has become easier, leading to more strain on the industry. We hope to be able to provide some relief through our ability to classify and the possible implications that are associated with successful classification. 
 
+#Dataset
 ```{r cars}
-summary(cars)
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Implications and Conclusions 
