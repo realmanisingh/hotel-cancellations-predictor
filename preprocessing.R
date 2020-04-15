@@ -118,7 +118,6 @@ names(df)[names(df) == "European Union"] <- "eu"
 
 # test & train
 # 85 15
-set.seed(5)
 test.size <- nrow(df) * 0.15
 df[, test:= 0]
 df[sample(nrow(df), test.size), test:= 1]
