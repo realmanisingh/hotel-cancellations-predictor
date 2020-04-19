@@ -8,6 +8,8 @@ library(ggcorrplot)
 library(rpart) 
 library(gbm)
 library(caret)
+library(randomForest)
+library(e1071)
 
 
 
@@ -15,12 +17,8 @@ library(caret)
 df <- fread('hotel_data.csv')
 unique(df$country)
 df <- df[!country == '']
-View(df)
 table(df$country)
 colnames(df)
-View(df)
-
-
 # add a column for arrival_date for time series analysis
 df[, arrival_date_month := match(arrival_date_month,month.name)]
 df[, arrival_date := with(df, ymd(sprintf('%04d%02d%02d', arrival_date_year, arrival_date_month, arrival_date_day_of_month)))]
@@ -89,7 +87,7 @@ weather$date <- as.Date(weather$date, '%m/%d/%y')
 # Resort hotel is Algarve, city hotel is Lisbon
 df <- merge(x = df, y = weather, by.x = c('arrival_date', 'city'), by.y = c('date', 'city'), all.x = TRUE)
 View(df[country == ''])
-View(df)
+
 
 
 
@@ -110,6 +108,10 @@ ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Fea
 names(df)[names(df) == "Km from Portugal"] <- "km"
 names(df)[names(df) == "European Union"] <- "eu"
 
+df$is_canceled[df$is_canceled == 1] <- 'Yes'
+df$is_canceled[df$is_canceled == 0] <- 'No' 
+
+df$is_canceled <- factor(df$is_canceled)
 # Creating a training set and test with an 85/15 split
 test.size <- nrow(df) * 0.15
 df[, test:= 0]
@@ -120,3 +122,5 @@ df.train <- df[test == 0]
 
 y.test <- df.test$is_canceled
 y.train <- df.train$is_canceled
+
+

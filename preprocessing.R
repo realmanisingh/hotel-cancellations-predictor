@@ -141,7 +141,7 @@ baseline_f1 <- as.formula(is_canceled ~  lead_time + adults + is_repeated_guest 
 baseline_model <- rpart(baseline_f1, df.train, method="class", control = rpart.control(cp = 0.001))
 
 
-
+# decision trees
 fit.tree <- rpart(f1, df.train, method="class", control = rpart.control(cp = 0.001))
 
 yhat.tree <- predict(fit.tree, df.train)
@@ -152,7 +152,7 @@ yhat.tree.test <- predict(fit.tree, df.test)
 mse.test <- mean((y.test - yhat.tree.test)^ 2)
 
 summary(fit.tree)
-
+# random forest
 fit.rndfor <- randomForest(f1, df.train, ntree=100, do.trace=0, importance=TRUE)
 
 plot(fit.rndfor)
