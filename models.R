@@ -91,7 +91,7 @@ mse.test <- mean((y.test - yhat.tree.test)^ 2)
 summary(fit.tree)
 
 # Random forest based on formula
-fit.rndfor <- randomForest(f1, df.train, ntree=100, do.trace=0, importance=TRUE)
+fit.rndfor <- randomForest(f1, df.train, ntree=500, do.trace=0, importance=TRUE)
 plot(fit.rndfor)
 importance(fit.rndfor)
 yhat.rndfor <- predict(fit.rndfor, df.train)
@@ -99,8 +99,12 @@ mse.rndfor <- mean((yhat.rndfor - y.train) ^ 2)
 yhat.rndfor.test <- predict(fit.rndfor, df.test)
 mse.rndfor.test <- mean((yhat.rndfor.test - y.test) ^ 2)
 
+conf <- fit.rndfor$confusion
 
+conf
 
+df.train[is_canceled=="Yes"] = 1
+df.train[is_canceled=="No"] = 0
 
 # boosted tree
 fit.btree <- gbm(f1, data = df.train, n.trees = 5000, distribution='bernoulli', interaction.depth = 2, shrinkage = 0.001, cv.folds=5)
@@ -108,6 +112,7 @@ gbm.perf(fit.btree)
 
 summary(fit.btree)
 
+confusionMatrix(fit.btree)
 
 
 best.iter = gbm.perf(fit.btree, method="cv")
@@ -115,8 +120,9 @@ best.iter = gbm.perf(fit.btree, method="cv")
 
 fitControl = trainControl(method="cv", number=5, returnResamp = "all")
 
-model2 = train(f1, data=df.train, method="gbm",distribution="bernoulli", trControl=fitControl, verbose=F, tuneGrid=data.frame(.n.trees=best.iter, .shrinkage=0.01, .interaction.depth=1, .n.minobsinnode=1))
+model2 <- train(f1, data=df.train, method="gbm",distribution="bernoulli", trControl=fitControl, verbose=F, tuneGrid=data.frame(.n.trees=best.iter, .shrinkage=0.01, .interaction.depth=1, .n.minobsinnode=1))
 
+model2
 
 mPred = predict(model2, df.train, na.action = na.pass)
 
