@@ -64,6 +64,18 @@ nested_rf <- train(f1, data = df.train,
                    verbose = FALSE)
 nested_rf
 
+
+# Naive bayes
+nested_bayes <- train(f1, data = df.train, 
+                      method = "naiveBayes", 
+                      trControl = fitControl, 
+                      tuneLength = 10
+                      ## This last option is actually one
+                      ## for gbm() that passes through
+)
+nested_bayes
+
+
 # Formula that includes all the predictors with corr coeff >= 0.1 as well as all the weather and country attributes
 f1 <- as.formula(is_canceled ~  lead_time + adults + is_repeated_guest + previous_cancellations + previous_bookings_not_canceled + booking_changes + days_in_waiting_list + required_car_parking_spaces
                  + total_of_special_requests + km + resort + city + distribute_TA_TO + distribute_direct + distribute_corporate + segment_direct + segment_corporate + segment_groups 
