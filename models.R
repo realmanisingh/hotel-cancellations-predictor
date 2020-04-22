@@ -67,7 +67,7 @@ nested_rf
 
 # Naive bayes
 nested_bayes <- train(f1, data = df.train, 
-                      method = "naiveBayes", 
+                      method = "nb", 
                       trControl = fitControl, 
                       tuneLength = 10
                       ## This last option is actually one
