@@ -104,24 +104,22 @@ df$city <- factor(df$city, levels=unique(c(0, 1)))
 cdf <- copy(df)
 cdf$country <- NULL
 cdf$country_name <- NULL
-fromDate <- min(cdf$arrival_date)
-cdf$datestamp <- as.integer(cdf$arrival_date - fromDate)
 cdf$day_of_week <- weekdays(cdf$arrival_date)
 cdf$day_of_week <- factor(cdf$day_of_week, levels=unique(c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')))
-cdf$arrival_date <- NULL
 cdf$resort <- NULL
 # IMPORTANT: reservation status shouldn't be included as it will give out the answer
 cdf$reservation_status <- NULL
 cdf$reservation_status_date <- NULL
 cdf$arrival_date_week_number <- NULL
 cdf$hotel_resort <- NULL
+View(cdf)
 
 #normalize numerical values
 #leadtime, stays_in_weekend_nights, stays in week nights, adults, children, babies
 # previous cancellations, previous bookings not canceled, booking changes, days in waiting list, adr
 # car parking spaces, total special requests, km, eu, max_temp, average_temp, min_temp, rain, date_stamp
-summary(df)
-preproc <- preProcess(cdf[,c(3, 7:11, 16, 17, 20, 24, 26:35)], method=c('range'))
+colnames(cdf)
+preproc <- preProcess(cdf[,c(4, 8:12, 17, 18, 21, 25, 27:35)], method=c('range'))
 cdf[,c(3, 7:11, 16:17, 20, 24, 26:35)] <- predict(preproc, cdf[,c(3, 7:11, 16:17, 20, 24, 26:35)])
 
 
@@ -138,6 +136,10 @@ df.train.sample <- df.train[sample(nrow(df.train), df.train.sample.size)]
 y.train.sample <- df.train.sample$is_canceled
 y.test <- df.test$is_canceled
 y.train <- df.train$is_canceled
+set.seed(6)
+df.test.sample.size <- 5000
+df.test.sample <- df.test[sample(nrow(df.test), df.test.sample.size)]
+y.test.sample <- df.test.sample$is_canceled
 
 #variable selection
 rf <- randomForest(is_canceled ~., data = df.train.sample)

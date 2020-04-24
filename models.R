@@ -3,14 +3,14 @@
 # Baseline model which is a decision tree that does not include any weather or country data 
 baseline_f1 <- as.formula(is_canceled ~  deposit_type + 
                             km + lead_time + market_segment + total_of_special_requests + adr + 
-                             datestamp + agent + arrival_date_month + average_temp + day_of_week + customer_type +
+                            agent + arrival_date_month + average_temp + day_of_week + customer_type +
                             required_car_parking_spaces + arrival_date_day_of_month + max_temp + assigned_room_type + min_temp + 
-                            previous_cancellations + stays_in_week_nights + booking_changes)
+                            previous_cancellations + stays_in_week_nights + booking_changes + deposit_type)
 
-baseline_model <- rpart(baseline_f1, df.train.sample, method="class", control = rpart.control(cp = 0.001))
+baseline_model <- rpart(baseline_f1, df.train, method="class", control = rpart.control(cp = 0.001))
 plot(baseline_model)
-baseline.test <- predict(baseline_model, df.test, type ='class')
-confusionMatrix(table(y.test, baseline.test))
+baseline.test <- predict(baseline_model, df.test.sample, type ='class')
+confusionMatrix(table(y.test.sample, baseline.test))
 
 # boosted tree model
 fitControl <- trainControl(## 10-fold CV
