@@ -106,15 +106,42 @@ test6 = get_data(2017, 38.638760, -9.037660, 1, 12)
 
 ```
 
-#Analysis
+*Other Data Consideration*
+  In a perfect world, we had two other variables we would have considered:
 
+Economic GDP Factor
+  In our dataset, we had reservations made from over 100 countries. As we were a team of four, we would have struggled to capture the GDP of each country for day, month, or even yearly. We felt that without getting this granular type of data, it would be not worth incorporating this information. 
+  
+Reason for Hotel Cancellation
+  One of the biggest things that we wish we had in our dataset was the reason for hotel cancellation. This would help us be able to know if there were multiple cancellations over a period of time due to a specific issue and filter out outliers. Unfortunately, the dataset kept the name of the hotels anonymous and as students, we felt we would not be able to get this data from the creators, if this is something they had even recorded. We would hope in the future hotels would keep this information as it is something that could help us possibly identify trends instead of just cancellations. 
+  
+#Data Cleaning 
+  In order to make the dataset is a useable one for cancellation prediction: 
+*Country Code Null*
+  In our dataset, we had 488 country codes that were NULL. Since we had added a KM from Portugal variable, we need to have data that we can match to this variable. It is for this reason we removed these 488 data points. 
+*Balancing Cancellation / No Cancellation*
+  Originally we had 119,390 datapoints in our dataset. This contained 75,166 non-cancellations and 44,224 cancellations. IWe wanted to make sure that the model did not show bias towards non-cancellation. We did this by nmaking sure our dataset contained equal distribution of cancellations and non-cancellations. 
+*Elimination of Reservation_Status*
+  In our dataset, we realized we had a variable that in reality we would not have in real-life. The reservation status and reservation status date indiciated that a reservation was cancelled. It was for this reason that we removed these two columns from our dataset. 
+*Day of Week*
+  One of the things that we wanted to test was to see if the specific day of the week had any effect. To do this, we set a numerical value for each day.  
+*Normalization*
+  [James]
+  
+#Analysis
+*Variable Selection*
+Initially, we used a correlation matrix along with the corresponding correlation coefficients to select variables. We believed that variables that had strong positive or negative correlations with the output variable, which we defined as having a correlation coefficient greater than 0.2, would best help the model make decisions. However, we saw that many of the predictors did not have strong correlations with the outcome variables. We then researched other methods for variable selection and we found that a random forest can be used for variable selection. The random forest decides how important a feature is based on how much a feature decreases node impurity. So after running a random forest with all the features, we were able to see the mean decrease in error for all the features. So, the variables that decreased the error the most were more important. We chose the 20 features with the highest mean decrease in error because there was a substantial drop off after the 20th highest feature. 
+
+*Model Selection*
+Including our baseline model, which was a decision tree, we ran in total 6 models. These models are logistic regression, random forest, decision tree, boosted decision tree, and naive bayes. We used nested cross validation to select the best model because nested cross validation gives us a general idea of how well the model will perform with optimal parameters. 
 ```{r}
 
 ```
-#Limitations
+
 
 #Implications 
   The ability to predict the cancellation of hotel reservations is important as it presents a potential recipe to a problem of loss of revenue. If a hotel had the ability to determine the number of hotel cancellations will happen in a singular night, the hotel can potentially overbook with some certainity to decrease the number of empty room and maximize revenue. One industry that has done this already is the airport industry. According to the Bureau of Transportation Statistics, the number of trips where people denied board, whether for overbooking purposes or for other reasons was 0.09% in 2015[^8]:{https://www.ft.com/content/e4cb5744-1e9d-11e7-a454-ab04428977f9}. In the cases of overbooking, passengers are offered vouchers and potentially a complimentary flight. While this does demonstrate a small loss, 99.91% of the time, companies will remain significantly profiting from this strategy. Lastly, we would hope that by including other variables as we have in our models, we will be able to reduce this 0.09% overbooked rate as we know that there are possible backlashes with this, as demonstrated by the United Continental public relation disaster in April of 2017, where a customer was forcibly removed. We would also need to develop a backup plan for what would happen if there was overbooking. 
+  With our current model, we would begin with using the model to allow for stand-bys. Our reason for this is that we can provide a certain estimate to the customer of a chance that they will have an ability to get a room. We could potentially charge a small fee to be put on the wait-list based off of that for the spot on the waitlist. The reason we are not jumping straight into double-booking and following the same models airlines follow is because our model still does not have a high enough accuracy rate. We know that there is a high risk for the fact that we will have false-negatives and for this reason too many double-bookings. This will result in a lot of backlash for the company that we would be way too much of a risk at this current moment. As we get better and better with our model down the rode though, we believe it is something that could be brought into discussion. 
   One of our biggest reasons we choose this problem is that fact it has so many implications in numerous industries besides hospitality. By having the ability to overbook, more customers can be served. This is something that can have as little of an effect of a couple gets to have a dinner reservation instead of being on a waitlist or as big as a patient getting to see a doctor that would not have been able to for months. We hope that by demonstrating that this method can have success, that eventually this is something that will be accepted over time. 
 
-#Conclusions 
+#Conclusion (don't know if we should add to the Implications)
