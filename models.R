@@ -100,10 +100,15 @@ rf <- train(baseline_f1, data = df.train,
                    ## This last option is actually one
                    ## for gbm() that passes through
                    verbose = FALSE)
+rf
 rf.test <- predict(rf, df.test)
 rf.results <- confusionMatrix(table(y.test, dtree.test))
 rf.results
 
+#Confusion matrix:
+  #0    1 class.error
+#0 2122  374   0.1498397
+#1  415 2089   0.1657348
 
 # Naive bayes
 bayes <- train(baseline_f1, data = df.train.sample, 

@@ -5,9 +5,16 @@ ggplot(df_time, aes(x = factor(arrival_date_month, levels= c("January", "Februar
 
 
 
-df_country <- df[, sum(is_canceled), by=.(country)]
+# Total cancellations for top 6 countries
+df_country <- df
+df_country[, cancel_int := 0] 
+df_country[is_canceled==1, cancel_int:=1]
+df_temp <- df_country[, sum(cancel_int), by=.(country)]
 
+df_temp_sub <- df_temp[country=="PRT" | country=="GBR" | country=="FRA" | country=="ESP" | country=="ITA" | country=="DEU"]
 
+ggplot(df_temp_sub, aes(x=country, y=V1, fill=country)) + geom_bar(stat = "identity") + 
+  labs(title = "Total Cancellations for Top 6 Countries", y="Total Cancellations", x="Countries")
 
 
 # Correlation Matrix for analyzing relevant features
