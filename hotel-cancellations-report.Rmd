@@ -129,15 +129,15 @@ Reason for Hotel Cancellation
   [James]
   
 #Analysis
+*Variable Selection*
+Initially, we used a correlation matrix along with the corresponding correlation coefficients to select variables. We believed that variables that had strong positive or negative correlations with the output variable, which we defined as having a correlation coefficient greater than 0.2, would best help the model make decisions. However, we saw that many of the predictors did not have strong correlations with the outcome variables. We then researched other methods for variable selection and we found that a random forest can be used for variable selection. The random forest decides how important a feature is based on how much a feature decreases node impurity. So after running a random forest with all the features, we were able to see the mean decrease in error for all the features. So, the variables that decreased the error the most were more important. We chose the 20 features with the highest mean decrease in error because there was a substantial drop off after the 20th highest feature. 
+
 *Model Selection*
+Including our baseline model, which was a decision tree, we ran in total 6 models. These models are logistic regression, random forest, decision tree, boosted decision tree, and naive bayes. We used nested cross validation to select the best model because nested cross validation gives us a general idea of how well the model will perform with optimal parameters. 
 ```{r}
 
 ```
 
-*Parameter Selection*
-```{r}
-
-```
 
 #Implications 
   The ability to predict the cancellation of hotel reservations is important as it presents a potential recipe to a problem of loss of revenue. If a hotel had the ability to determine the number of hotel cancellations will happen in a singular night, the hotel can potentially overbook with some certainity to decrease the number of empty room and maximize revenue. One industry that has done this already is the airport industry. According to the Bureau of Transportation Statistics, the number of trips where people denied board, whether for overbooking purposes or for other reasons was 0.09% in 2015[^8]:{https://www.ft.com/content/e4cb5744-1e9d-11e7-a454-ab04428977f9}. In the cases of overbooking, passengers are offered vouchers and potentially a complimentary flight. While this does demonstrate a small loss, 99.91% of the time, companies will remain significantly profiting from this strategy. Lastly, we would hope that by including other variables as we have in our models, we will be able to reduce this 0.09% overbooked rate as we know that there are possible backlashes with this, as demonstrated by the United Continental public relation disaster in April of 2017, where a customer was forcibly removed. We would also need to develop a backup plan for what would happen if there was overbooking. 
