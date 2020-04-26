@@ -1,16 +1,24 @@
 
+library(pROC)
+# Baseline model with only logistic regression without country and weather
+colnames(df.train)
+summary(df.train)
+baseline_model <- rpart(is_canceled~., df.train[,c(1:29)], method = 'class', control = rpart.control(cp = 0.001))
+plot(baseline_model)
+saveRDS(baseline_model, './baseline.rds')
+baseline_load <- readRDS('./baseline.rds')
 
-# Baseline model which is a decision tree that does not include any weather or country data 
+baseline.train <- predict(baseline_model, df.train, type = 'class')
+confusionMatrix(table(y.train, baseline.train))
+baseline.test <- predict(baseline_model, df.test, type ='class')
+confusionMatrix(table(y.test, baseline.test))
+
+#
 baseline_f1 <- as.formula(is_canceled ~  deposit_type + 
                             km + lead_time + market_segment + total_of_special_requests + adr + 
                             agent + arrival_date_month + average_temp + day_of_week + customer_type +
                             required_car_parking_spaces + arrival_date_day_of_month + max_temp + assigned_room_type + min_temp + 
                             previous_cancellations + stays_in_week_nights + booking_changes + deposit_type)
-
-baseline_model <- rpart(baseline_f1, df.train, method="class", control = rpart.control(cp = 0.001))
-plot(baseline_model)
-baseline.test <- predict(baseline_model, df.test.sample, type ='class')
-confusionMatrix(table(y.test.sample, baseline.test))
 
 # boosted tree model
 fitControl <- trainControl(## 10-fold CV
@@ -23,24 +31,70 @@ b.tree <- train(baseline_f1, data = df.train.sample,
                  trControl = fitControl,
                  ## This last option is actually one
                  ## for gbm() that passes through
-                 verbose = FALSE)
+                 verbose = FALSE, preProc = 'zv')
 b.tree
-btree.test <- predict(b.tree, df.test)
-btree.results <- confusionMatrix(table(y.test, btree.test))
+
 # results:
+
 # interaction.depth  n.trees  Accuracy   Kappa    
-# 1                   50      0.7561208  0.5101001
-# 1                  100      0.7944802  0.5879913
-# 1                  150      0.8014011  0.6020481
-# 2                   50      0.7978587  0.5949158
-# 2                  100      0.8148598  0.6293046
-# 2                  150      0.8223988  0.6445237
-# 3                   50      0.8075992  0.6146879
-# 3                  100      0.8236397  0.6470497
-# 3                  150      0.8271587  0.6541081
-# The final values used for the model were n.trees = 150, 
-# interaction.depth = 3, shrinkage = 0.1
+# 1                   50      0.7641004  0.5283804
+# 1                  100      0.7900646  0.5802152
+# 1                  150      0.7998428  0.5997430
+# 2                   50      0.7956225  0.5913156
+# 2                  100      0.8124813  0.6249873
+# 2                  150      0.8177839  0.6355810
+# 3                   50      0.8066617  0.6133577
+# 3                  100      0.8189819  0.6379758
+# 3                  150      0.8217223  0.6434529
+# The final values used for the model were n.trees =
+# 150, interaction.depth = 3, shrinkage = 0.1
 # and n.minobsinnode = 10.
+b.tree.table <- data.table(interaction.depth = c(1, 1, 1, 2, 2, 2, 3, 3, 3), 
+                              n.trees = c(50, 100, 150, 50, 100, 150, 50, 100, 150),
+                                          Accuracy = c(0.7641004, 0.7900646, 0.7998428, 0.7956225, 
+                                                      0.8123813, 0.8177839,0.8066617, 0.8189819, 0.8217223),
+                                         Kappa = c(0.5283804,0.5802152, 0.5997430, 0.5913156, 0.6249873, 0.6355810,
+                                                   0.6133577, 0.6379758,0.6434529) )
+
+
+
+df.train$is_canceled <- as.character(df.train$is_canceled)
+b.tree<- gbm(baseline_f1, data = df.train, distribution = "bernoulli", n.trees = 150,
+                            interaction.depth = 3, shrinkage = 0.1, n.minobsinnode = 10)
+saveRDS(b.tree, './final_model_with_gbm.rds')
+gbm.btree.test <- predict(b.tree, df.test, n.trees = 150, type = 'response')
+
+plot(roc(y.test, gbm.btree.test))
+# training model
+# Accuracy   Kappa    
+# 0.8331858  0.6663621
+# gbm method ##FINAL MODEL##
+df.train$is_canceled <- factor(df.train$is_canceled, levels=unique(c(0, 1)))
+                                  
+btree.grid <- expand.grid(interaction.depth = 3, n.trees = 150, 
+                          shrinkage = 0.1, n.minobsinnode = 10)
+#### FINAL MODEL #####
+final.btree <- train(baseline_f1, df.train, method = 'gbm', tuneGrid = btree.grid, verbose = FALSE, preProc = 'zv')
+saveRDS(final.btree, './final_model.rds')
+#train set
+
+final.btree.train <- predict(final.btree, df.train, n.trees = 150)
+btree.train.results <- confusionMatrix(table(y.train, final.btree.train))
+btree.train.results
+# test set
+final.btree.test <- predict(final.btree, df.test, n.trees = 150)
+plot(roc(y.test, as.numeric(final.btree.test)))
+
+
+
+btree.results <- confusionMatrix(table(y.test, final.btree.test))
+btree.results
+
+# Accuracy : 0.8358
+# final.btree.test
+# y.test    0    1
+# 0 5575 1022
+# 1 1153 5497
 
 # lasso
 lasso <- train(baseline_f1, data = df.train.sample, 
@@ -49,10 +103,8 @@ lasso <- train(baseline_f1, data = df.train.sample,
                  trControl = fitControl,
                  ## This last option is actually one
                  ## for gbm() that passes through
-                 verbose = FALSE)
+                 verbose = FALSE, preProc = 'zv')
 lasso
-lasso.test <- predict(lasso, df.test)
-lasso.results <- confusionMatrix(table(y.test, lasso.test))
 # results
 # alpha  lambda        Accuracy   Kappa    
 # 0.10   0.0004446642  0.7567385  0.5127203
@@ -64,9 +116,21 @@ lasso.results <- confusionMatrix(table(y.test, lasso.test))
 #1.00   0.0004446642  0.7578183  0.5148759
 #1.00   0.0044466421  0.7568380  0.5126856
 #1.00   0.0444664213  0.6933184  0.3814665
+
+
 # The final values used for the model were alpha = 1 and
 # lambda = 0.0004446642.
 
+# lasso on test set
+# lasso.grid <- expand.grid(alpha = 1, lambda = 0.0004446642)
+# lasso.final <- train(baseline_f1, data = df.train, 
+#               method = "glmnet", 
+#               family = "binomial",
+#               verbose = FALSE, tuneGrid = lasso.grid, preProc = 'zv')
+# lasso.final.test <- predict(lasso.final, df.test)
+# lasso.results <- confusionMatrix(table(y.test, lasso.final.test))
+# lasso.results
+# Accuracy: 0.7663 
 
 # decision tree
 dtree <- train(baseline_f1, data = df.train.sample, 
