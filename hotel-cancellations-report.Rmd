@@ -103,7 +103,7 @@ test6 = get_data(2017, 38.638760, -9.037660, 1, 12)
 *Joining All The Data* 
   Once all the supplemental data was collected by our team, we attached this to our original data using the merge function, as demonstrated below: 
 ```{r}
-
+df <- merge(x = df, y = weather, by.x = c('arrival_date', 'city'), by.y = c('date', 'city'), all.x = TRUE)
 ```
 
 *Other Data Consideration*
@@ -126,7 +126,7 @@ Reason for Hotel Cancellation
 *Day of Week*
   One of the things that we wanted to test was to see if the specific day of the week had any effect. To do this, we set a numerical value for each day.  
 *Normalization*
-  [James]
+  We normalized the numerical values so that those columns change the columns in the dataset to the same scale. This will make sure columns with intrinsically large values does not carry larger influence in the dataset.
   
 #Analysis
 *Variable Selection*
@@ -135,6 +135,57 @@ Initially, we used a correlation matrix along with the corresponding correlation
 *Model Selection*
 Including our baseline model, which was a decision tree, we ran in total 6 models. These models are logistic regression, random forest, decision tree, boosted decision tree, and naive bayes. We used nested cross validation to select the best model because nested cross validation gives us a general idea of how well the model will perform with optimal parameters. 
 ```{r}
+# formula used after variable selection
+baseline_f1 <- as.formula(is_canceled ~  deposit_type + km + lead_time + market_segment + total_of_special_requests + adr + agent + arrival_date_month + average_temp + day_of_week + customer_type + required_car_parking_spaces + arrival_date_day_of_month + max_temp + assigned_room_type + min_temp + previous_cancellations + stays_in_week_nights + booking_changes + deposit_type)
+
+# Repeated CV
+fitControl <- trainControl(## 10-fold CV
+  method = "repeatedcv",
+  number = 10,
+  ## repeated ten times
+  repeats = 10)
+
+# boosted tree
+b.tree <- train(baseline_f1, data = df.train.sample, 
+                 method = "gbm", 
+                 trControl = fitControl,
+                 verbose = FALSE, preProc = 'zv')
+b.tree.train <- predict(b.tree, df.train)
+confusionMatrix(table(b.tree.train, y.train))
+
+# lasso
+lasso <- train(baseline_f1, data = df.train.sample, 
+                 method = "glmnet", 
+                 family = "binomial",
+                 trControl = fitControl,
+                 verbose = FALSE, preProc = 'zv')
+lasso.train <- predict(lasso, df.train)
+
+# decision tree
+dtree <- train(baseline_f1, data = df.train.sample, 
+                      method = "rpart", 
+                      trControl = fitControl, 
+                      tuneLength = 10
+                      )
+dtree.train <- predict(dtree, df.train)
+confusionMatrix(table(dtree.train, y.train))
+
+# random forest
+rf <- train(baseline_f1, data = df.train.sample, 
+                   method = "rf", 
+                   trControl = fitControl,
+                   verbose = FALSE, preProc = 'zv')
+rf.train <- predict(rf, df.train)
+confusionMatrix(table(rf.train, y.train))
+
+
+# Naive bayes
+bayes <- train(baseline_f1, data = df.train.sample, 
+                      method = "nb", 
+                      trControl = fitControl, 
+                      tuneLength = 10,
+               verbose = FALSE, preProc = 'zv'
+)
 
 ```
 
