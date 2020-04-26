@@ -27,3 +27,12 @@ corr <- round(cor(df2), 1)
 corr
 ggcorrplot(corr, type = "lower") + ggtitle("Correlation Matrix for Numerical Features") + theme(plot.title = element_text(hjust = 0.5))
 
+# Cancellations by day of week
+vdf <- copy(df)
+cancel.day <- vdf[,sum(is_canceled == 1)/.N, by = day_of_week]
+cancel.day
+ggplot(cancel.day, aes(day_of_week, V1, fill = day_of_week)) + geom_bar(stat = 'identity') + 
+  labs(x = 'Day of Week', y = 'Cancellation %') + 
+  ggtitle ('Cancellation % By Day of Week') + 
+  theme(plot.title = element_text(hjust = 0.5), legend.position = 'none')
+
