@@ -19,9 +19,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Data Collection
   In addition to the dataset we had received from Kaggle, we wanted to find some supplemental data that we believed would have influence on whether an individual would cancel. For this we focused on four pieces of supplemental data:
-*Temperature*
+  
+### Temperature
   Due to the fact that one of the major reasons for travel is related to vacation, we decided that data related to temperature may be important to record. To do so, we recorded the high, average, and low temperature for both Lisbon and Algarve by gathering data that was easily copied and pasted from a weather site from July 1, 2015 to August 31, 2018[^4]:{https://www.wunderground.com/history/monthly/pt/montenegro/LPFR/date/2017-4}. 
-*Precipitation*
+### Precipitation
   As we had numerous people traveling, we felt that precipation could be a reason people cancel as the flight could be delayed/canceled and also if it is a rainy week, an individual may cancel their upcoming trip. To collect this data, we began by manually grabbing the first 400 days from a weather website[^5]:{https://www.worldweatheronline.com/lang/en-us/lisbon-weather-history/lisboa/pt.aspx}. Realizing this process was too tedious and taking hours to collect, we developed a code in Python to scrape the maximum points of rain we would from the API (1000 points a day). We have included the code below to serve as a point of reference. From this point we created a binary variable where if it rains there is a 1 for if it rained that day, 0 if it had not read that day. The reason we did that was due to issues we had in recording exact measurements of the total of rain from a singular day.
   
 ```{python, eval=FALSE}
@@ -94,17 +95,17 @@ test5 = get_data(2016, 38.638760, -9.037660, 1, 12)
 test6 = get_data(2017, 38.638760, -9.037660, 1, 12)
 ```
 
-*KM from Portugal*
+### KM from Portugal
   We believed that an individual who lived further away had a higher likelihood to cancel due to the fact that a small issue such as sickness or family could quickly deter plans. The first step in being able to determine if this would be true, was determining which countries we had in our dataset. Using the table function, we found the 178 different country codes used in our dataset. As the country code provided is 3 letters, we had to determine which code corresponded to what country. Using the World Integrated Trade Solution website [^6]:{https://wits.worldbank.org/wits/wits/witshelp/content/codes/country_codes.htm}, we went through and found each code individually and wrote in an Excel document what country corresponded to which code. After we took this step, we next looked up the distance that each country was from Portugal in kilometers [^7]:{https://www.google.com/maps and https://www.rome2rio.com/}. Once again, each country look up had to be done at an individual level as there was no dataset that contained this information for us that we could find. In the case of Portugal, we set the distance as 0 due to the fact that this was the country the hotel reservations were made for and we were not provided more granular information at the specific city level of travel. 
-*European Union*
+### European Union
   We wanted to test to see if a person who booked a reservation came from the European Union, as we felt that this could lead to an person being able to freely travel in all other member states. To construct this variable, we created a new column and set it to be a binary variable where if a country was in the EU, they were given the value of 1 and if a country was not it was given a value of 0 [^8]:{https://europa.eu/european-union/about-eu/countries_en}. Overall, we have 28 EU countries, which included the United Kingdom as our data was from 2015 through 2018 and the United Kingdom did not leave the European Union until January 2020.
-*Joining All The Data* 
+### Joining All The Data
   Once all the supplemental data was collected by our team, we attached this to our original data using the merge function, as demonstrated below: 
 ```{r, eval=FALSE}
 df <- merge(x = df, y = weather, by.x = c('arrival_date', 'city'), by.y = c('date', 'city'), all.x = TRUE)
 ```
 
-*Other Data Consideration*
+### Other Data Consideration
   In a perfect world, we had two other variables we would have considered:
 
 Economic GDP Factor
@@ -115,22 +116,22 @@ Reason for Hotel Cancellation
   
 # Data Cleaning 
   In order to make the dataset is a useable one for cancellation prediction: 
-*Country Code Null*
+### Country Code Null
   In our dataset, we had 488 country codes that were NULL. Since we had added a KM from Portugal variable, we need to have data that we can match to this variable. It is for this reason we removed these 488 data points. 
-*Balancing Cancellation / No Cancellation*
+### Balancing Cancellation / No Cancellation
   Originally we had 119,390 datapoints in our dataset. This contained 75,166 non-cancellations and 44,224 cancellations. IWe wanted to make sure that the model did not show bias towards non-cancellation. We did this by nmaking sure our dataset contained equal distribution of cancellations and non-cancellations. 
-*Elimination of Reservation_Status*
+### Elimination of Reservation_Status
   In our dataset, we realized we had a variable that in reality we would not have in real-life. The reservation status and reservation status date indiciated that a reservation was cancelled. It was for this reason that we removed these two columns from our dataset. 
-*Day of Week*
+### Day of Week
   One of the things that we wanted to test was to see if the specific day of the week had any effect. To do this, we set a numerical value for each day.  
-*Normalization*
+### Normalization
   We normalized the numerical values so that those columns change the columns in the dataset to the same scale. This will make sure columns with intrinsically large values does not carry larger influence in the dataset.
   
 # Analysis
-*Variable Selection*
+### Variable Selection
 Initially, we used a correlation matrix along with the corresponding correlation coefficients to select variables. We believed that variables that had strong positive or negative correlations with the output variable, which we defined as having a correlation coefficient greater than 0.2, would best help the model make decisions. However, we saw that many of the predictors did not have strong correlations with the outcome variables. We then researched other methods for variable selection and we found that a random forest can be used for variable selection. The random forest decides how important a feature is based on how much a feature decreases node impurity. So after running a random forest with all the features, we were able to see the mean decrease in error for all the features. So, the variables that decreased the error the most were more important. We chose the 20 features with the highest mean decrease in error because there was a substantial drop off after the 20th highest feature. 
 
-*Model Selection*
+### Model Selection
 Including our baseline model, which was a decision tree, we ran in total 6 models. These models are logistic regression, random forest, decision tree, boosted decision tree, and naive bayes. We used nested cross validation to select the best model because nested cross validation gives us a general idea of how well the model will perform with optimal parameters. 
 ```{r, eval=FALSE}
 # formula used after variable selection
