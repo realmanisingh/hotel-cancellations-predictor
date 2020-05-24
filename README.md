@@ -1,4 +1,4 @@
-# Predicting Hotel Cancellationst
+# Predicting Hotel Cancellations
 A machine learning project that uses R to predict hotel cancellations. The different models used are logistic regression, decision trees, random forests, gradient boosting, and naive bayes.
 
 # Data
